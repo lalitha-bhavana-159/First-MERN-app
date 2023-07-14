@@ -1,0 +1,118 @@
+const exp=require("express")
+const userApp=exp.Router()
+require("dotenv").config()
+
+const expressAsyncHandler=require("express-async-handler")
+const bcryptjs=require("bcryptjs")
+const jwt=require("jsonwebtoken")
+const verifyToken=require("./middlewares/verifyToken")
+
+const multerObj=require('./middlewares/cloudinaryconfig')
+
+userApp.use(exp.json())
+
+// const middleware1=(request,response,next)=>{
+//     console.log("middleware-1 executed");
+//     next()
+// }
+//to use middleware for all requests
+//app.use(middleware1)
+//create API
+// get users
+//get all users
+userApp.get('/get-users',expressAsyncHandler(
+    async(request,response)=>{
+        const userCollectionObj=request.app.get("userCollectionObj")
+            let dbRes=await userCollectionObj.find().toArray()
+            response.status(200).send({message:"List of Users",payload:dbRes})
+    }
+))
+
+// get user by username
+userApp.get('/get-user/:username',verifyToken,expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    let userName=request.params.username
+    let dbRes= await userCollectionObj.findOne({username:userName})
+    if(dbRes!=null){
+        delete dbRes.password
+        response.status(200).send({meassage:`User with username - ${userName}:`,payload:dbRes})
+    }else{
+        response.send({message:"User doesn't exist"})
+    }
+}))
+
+/* create user
+userApp.post('/create-user',expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    const newUser=request.body
+    let dbRes=await userCollectionObj.insertOne(newUser)
+    response.status(201).send({message:"User Created"})
+})) */
+
+// update user 
+userApp.put('/update-user',expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    let modifiedUser=request.body
+    let userName=modifiedUser.username
+    let dbRes1= await userCollectionObj.findOne({username:userName})
+    if(dbRes1!=null){
+    await userCollectionObj.updateOne({username:{$eq:modifiedUser.username}},{$set:{...modifiedUser}})
+    response.status(200).send({meassage:`User with username - ${modifiedUser.username} updated`})
+    }
+    else{
+        response.send({message:`User with username ${modifiedUser.username} doesn't exist`})
+    }
+}))
+
+// delete user
+userApp.delete('/delete-user/:username',expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    let userName=request.params.username
+    let dbRes=await userCollectionObj.deleteOne({username:userName})
+    if(dbRes!=null){
+        response.status(200).send({meassage:`User with username - ${userName} deleted`})
+    }else{
+        response.send({message:"User doesn't exist"})
+    }
+})) 
+
+userApp.post('/user-signup',multerObj.single('photo'),expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    const newUser=JSON.parse(request.body.user)
+    let userOfDb= await userCollectionObj.findOne({username:newUser.username})
+    if(userOfDb!=null){
+        response.status(200).send({message:"User already existed"})
+    }else{
+        //add cdn link of cloudinary image
+        newUser.image=request.file.path
+        let hashedPassword= await bcryptjs.hash(newUser.password,5) 
+        newUser.password=hashedPassword
+        await userCollectionObj.insertOne(newUser) 
+        response.status(201).send({message:"User created"})
+    }
+}))
+
+userApp.post('/user-login',expressAsyncHandler(async(request,response)=>{
+    const userCollectionObj=request.app.get("userCollectionObj")
+    const userCredObj=request.body
+    let userOfDb= await userCollectionObj.findOne({username:userCredObj.username})
+    if(userOfDb!==null){
+        let isEq=await bcryptjs.compare(userCredObj.password,userOfDb.password)
+        if(isEq!==false){
+            let jwtToken=jwt.sign({username:userOfDb.username},process.env.SECRET_KEY,{expiresIn:"2 days"})
+            delete userOfDb.password
+            response.status(200).send({message:"Success",token:jwtToken,user:userOfDb})
+        }else{
+            response.send({message:"Invalid password"})
+        }
+    }else{
+        response.send({message:"Invalid username"})
+    }
+}))
+
+//private route
+userApp.get("/test",verifyToken,(request,response)=>{
+    response.send({message:"reply from private route"})
+})
+
+module.exports=userApp;
