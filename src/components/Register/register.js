@@ -25,21 +25,19 @@ function Register() {
         //navigate to login
         navigate("/login")
       }
-      if(response.status!==201){
+      else{
         setError(response.data.message)
       }
     })
-    .catch((err)=>{
-      if(err.response){
-        setError(err.message)
+    .catch((err) => {
+      if (err.response) {
+        setError(err.response.data.message);
+      } else if (err.request) {
+        setError('No response received from the server');
+      } else {
+        setError('Error in making the request: ' + err.message);
       }
-      else if(err.request){
-        setError(err.message)
-      }
-      else{
-        setError(err.message)
-      }
-    })
+    });
   }
 
   //executes on file select
@@ -51,7 +49,9 @@ function Register() {
     <div className='container add-user'>
       <p className="display-3 text-center mt-5">Register</p>
       {/* Error message */}
-      {err.length!==0 && <p className="display-4 text-center text-danger">{err}</p> }
+      {err && err.length !== 0 && (
+        <p className="display-4 text-center text-danger">{err}</p>
+      )}
       {/* responsive form */}
       <div className="row">
         <div className="col-11 col-sm-8 col-md-6 mx-auto">

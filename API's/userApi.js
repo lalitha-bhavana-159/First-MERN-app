@@ -89,7 +89,7 @@ userApp.post('/user-signup',multerObj.single('photo'),expressAsyncHandler(async(
         newUser.password=hashedPassword
         await userCollectionObj.insertOne(newUser) 
         response.status(201).send({message:"User created"})
-    }
+    } 
 }))
 
 userApp.post('/user-login',expressAsyncHandler(async(request,response)=>{

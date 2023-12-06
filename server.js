@@ -1,6 +1,9 @@
 const exp=require("express")
 const app=exp()
 
+const userApp=require("./API's/userApi")
+app.use("/user-api",userApp)
+
 require("dotenv").config()
 const port=process.env.PORT||3500
 app.listen(port,()=>console.log("web server listening on port 3500"))
@@ -19,9 +22,6 @@ mclient.connect("mongodb://127.0.0.1/27017")
     console.log("DB connection success");
 })
 .catch((err)=>console.log("Database connect error:",err))
-
-const userApp=require("./API's/userApi")
-app.use("/user-api",userApp)
 
 const proApp=require("./API's/productApi")
 app.use("/product-api",proApp)
