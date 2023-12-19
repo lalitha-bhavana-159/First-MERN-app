@@ -49,7 +49,7 @@ function Register() {
     <div className='container add-user'>
       <p className="display-3 text-center mt-5">Register</p>
       {/* Error message */}
-      {err && err.length !== 0 && (
+      {err && typeof err === 'string' && err.length !== 0 && (
         <p className="display-4 text-center text-danger">{err}</p>
       )}
       {/* responsive form */}

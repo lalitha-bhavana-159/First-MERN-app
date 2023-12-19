@@ -1,44 +1,61 @@
-const exp=require("express")
-const app=exp()
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
-const userApp=require("./API's/userApi")
-app.use("/user-api",userApp)
+const app = express();
+const port = process.env.PORT || 3500;
 
-require("dotenv").config()
-const port=process.env.PORT||3500
-app.listen(port,()=>console.log("web server listening on port 3500"))
+// Enable CORS
+app.use(cors());
 
-const path=require("path")
-app.use(exp.static(path.join(__dirname,'./build')))
+// Serve static files from the 'build' directory
+app.use(express.static(path.join(__dirname, './build')));
 
-const mclient=require('mongodb').MongoClient
-mclient.connect("mongodb://127.0.0.1/27017")
-.then((dbRef)=>{
-    const dbObj=dbRef.db('userdb')
-    const userCollectionObj=dbObj.collection('usercollection')
-    const productCollectionObj=dbObj.collection('productcollection')
-    app.set('userCollectionObj',userCollectionObj)
-    app.set('productCollectionObj',productCollectionObj)
-    console.log("DB connection success");
-})
-.catch((err)=>console.log("Database connect error:",err))
+// Connect to MongoDB
+const mongoUri = 'mongodb://127.0.0.1:27017';
+const dbName = 'userdb';
 
-const proApp=require("./API's/productApi")
-app.use("/product-api",proApp)
+MongoClient.connect(mongoUri)
+  .then((client) => {
+    const db = client.db(dbName);
+    const userCollectionObj = db.collection('usercollection');
+    const productCollectionObj = db.collection('productcollection');
 
-const pageRefresh=(request,response,next)=>{
-    response.sendFile(path.join(__dirname,'./build/index.html'))
-}
-app.use("*",pageRefresh)
+    // Set MongoDB collections as app properties
+    app.set('userCollectionObj', userCollectionObj);
+    app.set('productCollectionObj', productCollectionObj);
 
+    console.log('DB connection success');
+  })
+  .catch((err) => console.log('Database connect error:', err));
 
+// API routes for user and product
+const userApi = require("./API's/userApi");
+const productApi = require("./API's/productApi");
+app.use('/user-api', userApi);
+app.use('/product-api', productApi);
 
-const invalidPathMiddleware=(request,response,next)=>{
-    response.send({message:'Invalid Path'})
-}
-app.use("*",invalidPathMiddleware)
+// Route to handle page refresh
+const pageRefresh = (request, response, next) => {
+  response.sendFile(path.join(__dirname, './build/index.html'));
+};
+app.use('*', pageRefresh);
 
-const errhandlingMiddleware=(error,request,response,next)=>{
-    response.send({message:error.message})
-}
-app.use(errhandlingMiddleware)
+// Middleware for invalid paths
+const invalidPathMiddleware = (request, response, next) => {
+  response.send({ message: 'Invalid Path' });
+};
+app.use('*', invalidPathMiddleware);
+
+// Error handling middleware
+const errhandlingMiddleware = (error, request, response, next) => {
+  response.send({ message: error.message });
+};
+app.use(errhandlingMiddleware);
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Web server listening on port ${port}`);
+});
