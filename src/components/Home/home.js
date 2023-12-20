@@ -4,8 +4,8 @@ import './home.css'
 function home() {
   return(
     <div className='mt-5 container text-center'>
-      <p className='display-3 text-muted'>Home</p>
-      <p className="lead">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quasi voluptates quidem commodi sit earum qui recusandae cumque? Optio quaerat natus ratione pariatur amet ad quibusdam corporis voluptatibus voluptas magnam debitis sint dolore tempore laboriosam consequuntur blanditiis cumque a ipsum, veritatis minus sapiente! Suscipit, et. Asperiores ullam nisi molestias? Incidunt, asperiores!</p>
+      <p className='display-3 text-muted'>Monitor the police.</p>
+      <p className="lead">No more walkie-talkies, monitor the police at a click of a button.</p>
     </div>
   )
 }

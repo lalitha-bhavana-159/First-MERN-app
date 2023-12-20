@@ -52,6 +52,11 @@ function NavigationBar() {
                 return isActive?activeLink:inactiveLink
               }}>About Us</NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/adminlogin" style={({isActive})=>{
+                return isActive?activeLink:inactiveLink
+              }}>Admin Login</NavLink>
+            </li>
           </ul>
         </div>
       </div>

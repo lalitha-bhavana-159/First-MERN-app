@@ -7,7 +7,8 @@ import Register from './components/Register/register'
 import AboutUs from './components/AboutUs/aboutUs'
 import Userprofile from './components/User-profile/UserProfile'
 import Products from './components/Products/Products'
-import Cart from './components/Cart/Cart'
+import AdminLogin from './components/AdminLogin/AdminLogin'
+import AdminProfile from './components/AdminProfile/AdminProfile'
 
 function App() {
   const router=createBrowserRouter([
@@ -38,13 +39,23 @@ function App() {
             {
               path:"products",
               element:<Products/>,
-            },
-            {
-              path:"cart",
-              element:<Cart/>,
             }
           ]
-        }
+        },
+        {
+          path:"/adminlogin",
+          element:<AdminLogin/>,
+        },
+        {
+          path:"/admin-profile",
+          element:<AdminProfile/>,
+          children:[
+            {
+              path:"products",
+              element:<Products/>,
+            }
+          ]
+        },
       ]
     }
   ])

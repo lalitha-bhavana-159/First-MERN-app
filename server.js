@@ -14,10 +14,10 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, './build')));
 
 // Connect to MongoDB
-const mongoUri = 'mongodb://127.0.0.1:27017';
+const mongoUrl = 'mongodb+srv://summerinternship:summerinternship@cluster0.hfvnn5l.mongodb.net/?retryWrites=true&w=majority';
 const dbName = 'userdb';
 
-MongoClient.connect(mongoUri)
+MongoClient.connect(mongoUrl)
   .then((client) => {
     const db = client.db(dbName);
     const userCollectionObj = db.collection('usercollection');

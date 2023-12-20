@@ -1,11 +1,10 @@
 import React,{useContext} from 'react'
-import './UserProfile.css'
+import './AdminProfile.css'
 import { loginContext } from '../../contexts/loginContext'
 import { NavLink, Outlet } from "react-router-dom";
 
-function UserProfile() {
-
-  let [user]=useContext(loginContext)
+function AdminProfile() {
+    let [user]=useContext(loginContext)
 
   const activeLink={
     color: "#992817",
@@ -27,17 +26,12 @@ function UserProfile() {
       <li className="nav-item">
         <NavLink className="nav-link" style={({isActive})=>{
           return isActive?activeLink:inactiveLink
-          }} to="products">Know your location!</NavLink>
+          }} to="products">Monitor</NavLink>
       </li>
-      {/* <li className="nav-item">
-        <NavLink className="nav-link" style={({isActive})=>{
-          return isActive?activeLink:inactiveLink
-        }} to="cart">Cart</NavLink>
-      </li> */}
       </ul>
       <Outlet/>
     </div>
   )
 }
 
-export default UserProfile
+export default AdminProfile

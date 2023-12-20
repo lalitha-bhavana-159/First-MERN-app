@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import axios from 'axios';
 
 const AboutUs = () => {
   const mapContainerRef = useRef(null);
-  const [userLocations, setUserLocations] = useState([]);
 
   useEffect(() => {
     // Ensure map container is available
@@ -15,7 +14,7 @@ const AboutUs = () => {
     }
 
     // Initialize Leaflet map
-    const map = L.map(mapContainerRef.current, { attributionControl: false }).setView([48.505, -0.09], 3);
+    const map = L.map(mapContainerRef.current, { attributionControl: false }).setView([48.505, -0.09], 23);
 
     // Add OpenStreetMap tile layer
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -56,35 +55,12 @@ const AboutUs = () => {
       if (err.code === 1) {
         alert('Please allow geolocation access');
       } else {
-        alert('Cannot get the current location');
+        alert('Cannot get current location');
       }
     };
 
     // Watch for geolocation changes
     const watchId = navigator.geolocation.watchPosition(success, error);
-
-    // Fetch locations of logged-in users from the server
-    const fetchUserLocations = async () => {
-      try {
-        const response = await axios.get('http://localhost:3500/user-api/get-locations');
-        const locations = response.data;
-
-        // Display markers for each logged-in user
-        locations.forEach((location) => {
-          const { latitude, longitude, accuracy, userId } = location;
-          const userMarker = L.marker([latitude, longitude]).addTo(map);
-          userMarker.bindPopup(`User ${userId}<br>Accuracy: ${accuracy} meters`);
-        });
-
-        // Save user locations in the component state for potential future use
-        setUserLocations(locations);
-      } catch (error) {
-        console.error('Error fetching user locations:', error);
-      }
-    };
-
-    // Call the fetchUserLocations function
-    fetchUserLocations();
 
     // Cleanup on component unmount
     return () => {
@@ -94,8 +70,7 @@ const AboutUs = () => {
         map.remove();
       }
     };
-
-  }, []); // Add any dependencies as needed
+  }, []);
 
   const sendLocationToServer = (latitude, longitude, accuracy) => {
     // Example HTTP request using axios
