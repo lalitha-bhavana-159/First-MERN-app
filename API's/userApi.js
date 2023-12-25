@@ -51,7 +51,6 @@ userApp.post('/create-user',expressAsyncHandler(async(request,response)=>{
 
 // update user 
 userApp.put('/update-user',expressAsyncHandler(async(request,response)=>{
-    const userCollectionObj=request.app.get("userCollectionObj")
     let modifiedUser=request.body
     let userName=modifiedUser.username
     let dbRes1= await userCollectionObj.findOne({username:userName})
@@ -87,6 +86,9 @@ userApp.post('/user-signup',multerObj.single('photo'),expressAsyncHandler(async(
         newUser.image=request.file.path
         let hashedPassword= await bcryptjs.hash(newUser.password,5) 
         newUser.password=hashedPassword
+        newUser.latitude=0
+        newUser.longitude=0
+        newUser.accuracy=0
         await userCollectionObj.insertOne(newUser) 
         response.status(201).send({message:"User created"})
     } 
@@ -109,6 +111,24 @@ userApp.post('/user-login',expressAsyncHandler(async(request,response)=>{
         response.send({message:"Invalid username"})
     }
 }))
+
+userApp.post('/update-location', async(req, res) => {
+    //console.log("in update location")
+    //console.log(req)
+    const userCollectionObj=req.app.get("userCollectionObj")
+    const userCredObj=req.body
+    //console.log(userCredObj.longitude)
+    let userOfDb= await userCollectionObj.findOne({username:userCredObj.username})
+    if(userOfDb!=null){
+        await userCollectionObj.updateOne({username:userCredObj.username},{$set:{latitude:userCredObj.latitude}})
+        await userCollectionObj.updateOne({username:userCredObj.username},{$set:{longitude:userCredObj.longitude}})
+        await userCollectionObj.updateOne({username:userCredObj.username},{$set:{accuracy:userCredObj.accuracy}})
+    }
+    else{
+        res.send({message:"Invalid"})
+    }
+  });
+
 
 //private route
 userApp.get("/test",verifyToken,(request,response)=>{

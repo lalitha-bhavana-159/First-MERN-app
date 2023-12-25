@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useContext} from 'react';
 import './Products.css'
 import axios from 'axios'
 import { Link } from "react-router-dom";
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import {loginContext} from '../../contexts/loginContext';
 
 
 
 function Products() {
 
   const mapContainerRef = useRef(null);
-  const [userLocations, setUserLocations] = useState([]);
+  let [user,loginErr,userLoginStatus,loginUser]=useContext(loginContext)
 
   const customMarker = L.icon({
     iconUrl: 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Fsmall-n-flat%2F24%2Fmap-marker-512.png&tbnid=EeqL3TTfk2w8hM&vet=12ahUKEwj4nsOIwp6DAxWiSGwGHSmZDzIQMygAegQIARBz..i&imgrefurl=https%3A%2F%2Fwww.iconfinder.com%2Ficons%2F285659%2Fmarker_map_icon&docid=twXikGue4HjfcM&w=512&h=512&q=map%20marker&ved=2ahUKEwj4nsOIwp6DAxWiSGwGHSmZDzIQMygAegQIARBz',
@@ -43,6 +44,8 @@ function Products() {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
         const accuracy = pos.coords.accuracy;
+        console.log(lng)
+        console.log(lat)
 
         if (usermarker) {
           map.removeLayer(usermarker);
@@ -78,27 +81,27 @@ function Products() {
     const watchId = navigator.geolocation.watchPosition(success, error);
 
     // Fetch locations of logged-in users from the server
-    const fetchUserLocations = async () => {
-      try {
-        const response = await axios.get('http://localhost:3500/user-api/get-locations');
-        const locations = response.data;
+    // const fetchUserLocations = async () => {
+    //   try {
+    //     const response = await axios.get('http://localhost:3500/user-api/get-locations');
+    //     const locations = response.data;
 
-        // Display markers for each logged-in user
-        locations.forEach((location) => {
-          const { latitude, longitude, accuracy, userId } = location;
-          const userMarker = L.marker([latitude, longitude]).addTo(map);
-          userMarker.bindPopup(`User ${userId}<br>Accuracy: ${accuracy} meters`);
-        });
+    //     // Display markers for each logged-in user
+    //     locations.forEach((location) => {
+    //       const { latitude, longitude, accuracy, userId } = location;
+    //       const userMarker = L.marker([latitude, longitude]).addTo(map);
+    //       userMarker.bindPopup(`User ${userId}<br>Accuracy: ${accuracy} meters`);
+    //     });
 
-        // Save user locations in the component state for potential future use
-        setUserLocations(locations);
-      } catch (error) {
-        console.error('Error fetching user locations:', error);
-      }
-    };
+    //     // Save user locations in the component state for potential future use
+    //     //setUserLocations(locations);
+    //   } catch (error) {
+    //     console.error('Error fetching user locations:', error);
+    //   }
+    // };
 
-    // Call the fetchUserLocations function
-    fetchUserLocations();
+    // // Call the fetchUserLocations function
+    // fetchUserLocations();
 
     // Cleanup on component unmount
     return () => {
@@ -112,19 +115,29 @@ function Products() {
   }, []); // Add any dependencies as needed
 
   const sendLocationToServer = (latitude, longitude, accuracy) => {
-    // Example HTTP request using axios
-    axios.post('http://localhost:3500/user-api/send-location', {
+    const apiUrl = 'http://localhost:3500/user-api/update-location';
+    
+    const username = user.username;
+  
+    // Data to be sent in the POST request
+    const data = {
+      username,
       latitude,
       longitude,
       accuracy,
-    })
-    .then((response) => {
-      console.log('Location sent to server:', response.data);
-    })
-    .catch((error) => {
-      console.error('Error sending location to server:', error);
-    });
+    };
+  
+    // Making an Axios POST request to update user location
+    axios.post(apiUrl, data)
+      .then(response => {
+        console.log('Location updated for user:', username);
+      })
+      .catch(error => {
+        console.error('Error updating location:', error);
+      });
   };
+
+  //sendLocationToServer();
 
   return (
     <div>

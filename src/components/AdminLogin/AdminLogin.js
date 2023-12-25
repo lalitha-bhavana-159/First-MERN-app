@@ -1,32 +1,28 @@
 import React,{useState,useContext,useEffect} from 'react'
 import './AdminLogin.css'
 import { useForm } from "react-hook-form";
-import { loginContext } from '../../contexts/loginContext';
 import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
 
-  let [user,loginErr,userLoginStatus,loginUser]=useContext(loginContext)
-
-  let {register,handleSubmit,formState:{errors}}=useForm();
-
-  let Submit=(userCredObj)=>{
-    loginUser(userCredObj)
-  }
-
   let navigate=useNavigate()
 
-  useEffect(()=>{
-    if(userLoginStatus===true){
+  let {register,handleSubmit,formState:{errors}}=useForm();
+  let userLoginStatus=false;
+  let Submit=(userCredObj)=>{
+    if(userCredObj.username==="Lalitha" && userCredObj.password==="Bhavana"){
+      userLoginStatus=true;
+      console.log('Successful login!');
       navigate("/admin-profile")
     }
-  },[userLoginStatus])
+  }
 
+  
   return (
     <div className='container add-user'>
       <p className="display-3 text-center mt-5">Login</p>
       {/* Login error */}
-      {loginErr.length!=0 && (<p className="display-3 text-danger text-center">{loginErr}</p> )}
+      {/* {loginErr.length!=0 && (<p className="display-3 text-danger text-center">{loginErr}</p> )} */}
       {/* responsive form */}
       <div className="row">
         <div className="col-11 col-sm-8 col-md-6 mx-auto">

@@ -9,7 +9,7 @@ function Register() {
   let {register,handleSubmit,formState:{errors}}=useForm();
   let [err,setError]=useState("")
   let [file,setFile]=useState(null)
-
+  
   const navigate=useNavigate()
 
   let Submit=(newUser)=>{

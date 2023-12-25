@@ -19,15 +19,9 @@ function AdminProfile() {
 
   return (
     <div>
-      <p className="display-5 text-end">Welcome, {user.username}!</p>
-      <p className="lead text-end"><small>{user.email}</small></p>
-      <img src={user.image} width="75px" className='float-end' alt="" />
+      <p className="display-5 text-end">Welcome, Admin!</p>
       <ul className="nav justify-content-between">
-      <li className="nav-item">
-        <NavLink className="nav-link" style={({isActive})=>{
-          return isActive?activeLink:inactiveLink
-          }} to="products">Monitor</NavLink>
-      </li>
+      <p className="display-5">Happy Monitoring!</p>
       </ul>
       <Outlet/>
     </div>
