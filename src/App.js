@@ -9,6 +9,7 @@ import Userprofile from './components/User-profile/UserProfile'
 import Products from './components/Products/Products'
 import AdminLogin from './components/AdminLogin/AdminLogin'
 import AdminProfile from './components/AdminProfile/AdminProfile'
+import Cart from './components/Cart/Cart'
 
 function App() {
   const router=createBrowserRouter([
@@ -28,10 +29,7 @@ function App() {
           path:"/register",
           element:<Register/>,
         },
-        {
-          path:"/about-us",
-          element:<AboutUs/>,
-        },
+        
         {
           path:"/user-profile",
           element:<Userprofile/>,
@@ -51,8 +49,8 @@ function App() {
           element:<AdminProfile/>,
           children:[
             {
-              path:"products",
-              element:<Products/>,
+              path:"cart",
+              element:<Cart/>,
             }
           ]
         },
@@ -60,7 +58,7 @@ function App() {
     }
   ])
   return (
-    <div  >
+    <div className='App' >
       <RouterProvider router={router}/>
     </div>
   );

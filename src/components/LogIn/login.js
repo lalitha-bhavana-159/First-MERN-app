@@ -24,7 +24,7 @@ function Login() {
 
   return (
     <div className='container add-user'>
-      <p className="display-3 text-center mt-5">Login</p>
+      <p className="display-3 text-center mt-5 text-light">Login</p>
       {/* Login error */}
       {loginErr.length!=0 && (<p className="display-3 text-danger text-center">{loginErr}</p> )}
       {/* responsive form */}

@@ -47,7 +47,7 @@ function Register() {
 
   return (
     <div className='container add-user'>
-      <p className="display-3 text-center mt-5">Register</p>
+      <p className="display-3 text-center mt-5 text-light">Register</p>
       {/* Error message */}
       {err && typeof err === 'string' && err.length !== 0 && (
         <p className="display-4 text-center text-danger">{err}</p>

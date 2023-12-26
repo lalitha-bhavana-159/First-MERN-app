@@ -8,21 +8,29 @@ function AdminProfile() {
 
   const activeLink={
     color: "#992817",
-    fontSize:"1.2 rem",
-    fontWeight:"bold"
+    fontSize:"3 rem",
+    fontWeight:"bold",
+    textDecoration: "underline"
   };
 
   const inactiveLink={
     color: "black",
-    fontSize:"1.2 rem"
+    fontSize:"3 rem",
+    fontWeight:"bold",
+    textDecoration: "underline"
   };
 
   return (
     <div>
-      <p className="display-5 text-end">Welcome, Admin!</p>
+      <p className="display-5 text-end text-light">Welcome, Admin!</p>
       <ul className="nav justify-content-between">
-      <p className="display-5">Happy Monitoring!</p>
+      <li className="nav-item under">
+        <NavLink className="nav-link text-light" style={({isActive})=>{
+          return isActive?activeLink:inactiveLink
+          }} to="cart">Monitor!</NavLink>
+      </li>
       </ul>
+      
       <Outlet/>
     </div>
   )

@@ -9,31 +9,29 @@ function UserProfile() {
 
   const activeLink={
     color: "#992817",
-    fontSize:"1.2 rem",
-    fontWeight:"bold"
+    fontSize:"3 rem",
+    fontWeight:"bold",
+    textDecoration: "underline"
   };
 
   const inactiveLink={
     color: "black",
-    fontSize:"1.2 rem"
+    fontSize:"3 rem",
+    fontWeight:"bold",
+    textDecoration: "underline"
   };
 
   return (
     <div>
-      <p className="display-5 text-end">Welcome, {user.username}!</p>
-      <p className="lead text-end"><small>{user.email}</small></p>
+      <p className="display-5 text-end text-light">Welcome, {user.username}!</p>
+      <p className="lead text-end text-light"><small>{user.email}</small></p>
       <img src={user.image} width="75px" className='float-end' alt="" />
       <ul className="nav justify-content-between">
       <li className="nav-item">
-        <NavLink className="nav-link" style={({isActive})=>{
+        <NavLink className="nav-link text-light" style={({isActive})=>{
           return isActive?activeLink:inactiveLink
           }} to="products">Know your location!</NavLink>
       </li>
-      {/* <li className="nav-item">
-        <NavLink className="nav-link" style={({isActive})=>{
-          return isActive?activeLink:inactiveLink
-        }} to="cart">Cart</NavLink>
-      </li> */}
       </ul>
       <Outlet/>
     </div>

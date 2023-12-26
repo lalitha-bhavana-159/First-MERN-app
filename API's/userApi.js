@@ -11,23 +11,20 @@ const multerObj=require('./middlewares/cloudinaryconfig')
 
 userApp.use(exp.json())
 
-// const middleware1=(request,response,next)=>{
-//     console.log("middleware-1 executed");
-//     next()
-// }
-//to use middleware for all requests
-//app.use(middleware1)
-//create API
-// get users
-//get all users
-userApp.get('/get-users',expressAsyncHandler(
-    async(request,response)=>{
-        const userCollectionObj=request.app.get("userCollectionObj")
-            let dbRes=await userCollectionObj.find().toArray()
-            response.status(200).send({message:"List of Users",payload:dbRes})
-    }
-))
 
+userApp.get('/get-users', expressAsyncHandler(async (request, response) => {
+    try {
+      console.log("Before fetching users");
+      const userCollectionObj = request.app.get("userCollectionObj");
+      let dbRes = await userCollectionObj.find().toArray();
+      console.log("After fetching users", dbRes);
+      response.status(200).send({ message: "List of Users", payload: dbRes });
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      response.status(500).send({ message: "Internal Server Error" });
+    }
+  }));
+  
 // get user by username
 userApp.get('/get-user/:username',verifyToken,expressAsyncHandler(async(request,response)=>{
     const userCollectionObj=request.app.get("userCollectionObj")

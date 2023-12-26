@@ -19,10 +19,11 @@ function NavigationBar() {
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light ">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#"><img width="50px" src="https://findicons.com/files/icons/1994/vista_style_business_and_data/256/users.png" alt="" /></a>
+        <a className="navbar-brand" href="#"><img width="50px" border-radius="50%" src="https://s17233.pcdn.co/blog/wp-content/uploads/2021/03/Marketing_Tracking-Links_Site_0409.png" alt="" /></a>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
+        <p className='text-dark mt-2 display-6'>ThirdEye</p>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
@@ -47,11 +48,11 @@ function NavigationBar() {
                 }}>Login</NavLink>
               </li>
             }
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink className="nav-link" to="/about-us" style={({isActive})=>{
                 return isActive?activeLink:inactiveLink
               }}>About Us</NavLink>
-            </li>
+            </li> */}
             <li className="nav-item">
               <NavLink className="nav-link" to="/adminlogin" style={({isActive})=>{
                 return isActive?activeLink:inactiveLink
